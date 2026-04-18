@@ -66,6 +66,7 @@ export interface UserProfile {
   longestStreak: number;
   lastRecycledAt: string | null;
   isAdmin: boolean;
+  createdAt: string;
 }
 
 export interface RecyclingEntry {
