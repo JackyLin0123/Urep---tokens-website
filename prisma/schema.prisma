@@ -1,0 +1,117 @@
+// ─────────────────────────────────────────────────
+// EcoToken — Prisma Schema
+// ─────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+// ── User profile (linked to Supabase Auth) ──────
+
+model User {
+  id              String          @id @default(uuid())
+  email           String          @unique
+  name            String?
+  avatarUrl       String?         @map("avatar_url")
+  university      String?
+  tokenBalance    Int             @default(0)   @map("token_balance")
+  totalRecycled   Int             @default(0)   @map("total_recycled")
+  currentStreak   Int             @default(0)   @map("current_streak")
+  longestStreak   Int             @default(0)   @map("longest_streak")
+  lastRecycledAt  DateTime?       @map("last_recycled_at")
+  isAdmin         Boolean         @default(false) @map("is_admin")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt      @map("updated_at")
+
+  recyclingLogs   RecyclingLog[]
+  redemptions     Redemption[]
+
+  @@map("users")
+}
+
+// ── Recycling activity log ──────────────────────
+
+model RecyclingLog {
+  id          String      @id @default(uuid())
+  userId      String      @map("user_id")
+  itemType    ItemType    @map("item_type")
+  quantity    Int         @default(1)
+  tokensEarned Int        @map("tokens_earned")
+  binLocation String?     @map("bin_location")
+  verifiedBy  String?     @map("verified_by")  // admin who approved
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("recycling_logs")
+}
+
+enum ItemType {
+  PLASTIC_BOTTLE
+  ALUMINUM_CAN
+  GLASS_BOTTLE
+  PAPER
+  CARDBOARD
+  ELECTRONICS
+  TEXTILE
+  COMPOST
+  OTHER
+}
+
+// ── Reward catalog ──────────────────────────────
+
+model Reward {
+  id          String        @id @default(uuid())
+  name        String
+  description String
+  category    RewardCategory
+  tokenCost   Int           @map("token_cost")
+  imageUrl    String?       @map("image_url")
+  stock       Int?          // null = unlimited
+  isActive    Boolean       @default(true) @map("is_active")
+  metadata    Json?         // flexible extra data (hours, discount $, etc.)
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  redemptions Redemption[]
+
+  @@map("rewards")
+}
+
+enum RewardCategory {
+  SERVICE_HOURS
+  FOOD_VOUCHER
+  MERCHANDISE
+  EXPERIENCE
+}
+
+// ── Redemption records ──────────────────────────
+
+model Redemption {
+  id          String           @id @default(uuid())
+  userId      String           @map("user_id")
+  rewardId    String           @map("reward_id")
+  tokensCost  Int              @map("tokens_cost")
+  status      RedemptionStatus @default(PENDING)
+  code        String?          // voucher/certificate code
+  createdAt   DateTime         @default(now()) @map("created_at")
+
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reward      Reward           @relation(fields: [rewardId], references: [id])
+
+  @@index([userId])
+  @@map("redemptions")
+}
+
+enum RedemptionStatus {
+  PENDING
+  FULFILLED
+  EXPIRED
+  CANCELLED
+}
