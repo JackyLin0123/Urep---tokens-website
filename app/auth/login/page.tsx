@@ -1,12 +1,12 @@
 "use client";
-
+import { Suspense } from "react";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Leaf, Mail, Loader2, ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase-browser";
 
-export default function LoginPage() {
+export function LoginContent() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -198,5 +198,12 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   );
 }
