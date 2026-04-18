@@ -1,4 +1,4 @@
-import { type ClassValue, clsx } from "clsx";
+
 
 // Simple clsx implementation (no dependency needed)
 export function cn(...inputs: (string | undefined | null | false)[]) {
