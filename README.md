@@ -1,6 +1,8 @@
 # 🌿 EcoToken — Campus Recycling Rewards
 
-A full-stack web application that incentivizes university students to recycle by earning tokens redeemable for rewards like food vouchers, community service hours, and eco-friendly merchandise.
+A full-stack web application that incentivizes university students to recycle by earning tokens redeemable for food vouchers, eco-friendly merchandise, and unique experiences.
+
+🔗 **Live Demo**: [urep-tokens-website-dpi5.vercel.app](https://urep-tokens-website-dpi5.vercel.app)
 
 ![Next.js](https://img.shields.io/badge/Next.js_14-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
@@ -13,28 +15,24 @@ A full-stack web application that incentivizes university students to recycle by
 ## Features
 
 ### Student Features
-- **Dashboard** — Token balance, items recycled, daily streak stats
-- **Recycling History** — Paginated log of all recycling activity
+- **Dashboard** — Token balance, items recycled, daily streak stats at a glance
+- **Recycling History** — Paginated log of all recycling activity with date, item type, and tokens earned
 - **Rewards Marketplace** — Browse and redeem tokens for rewards:
-  - 🎓 Community service hours certificates
-  - ☕ Campus café discount vouchers
-  - 🎁 Eco merchandise (tote bags, water bottles, t-shirts)
+  - ☕ Campus café discount vouchers ($5 / $10)
+  - 🎁 Eco merchandise (tote bags, water bottles, t-shirts, bamboo cutlery)
   - 🌿 Unique experiences (tree planting, garden workshops)
 - **Profile** — Token wallet, milestone badges, account info
-- **Leaderboard** — Top campus recyclers ranked
-- **How It Works** — Onboarding guide with token value table
+- **Leaderboard** — Top campus recyclers ranked with podium display
+- **How It Works** — Onboarding guide with token value table and FAQ
 
 ### Admin / Demo Features
 - **Admin Panel** — Manually award tokens to any student (simulates bin verification)
 - **QR Code Simulation** — Visual demo of the scan-and-recycle flow
 
-### Technical Highlights
-- Magic link + Google OAuth authentication via Supabase
-- Row Level Security (RLS) on all database tables
-- Automatic streak tracking (48-hour window)
-- Transactional token operations (atomic balance updates)
+### Authentication
+- **Magic Link** — Passwordless email sign-in via Supabase
+- **Google OAuth** — One-click Google sign-in
 - Mobile-first responsive design with bottom navigation
-- Animated page transitions and micro-interactions
 
 ---
 
@@ -45,7 +43,7 @@ A full-stack web application that incentivizes university students to recycle by
 | Framework    | Next.js 14 (App Router)            |
 | Language     | TypeScript                          |
 | Styling      | Tailwind CSS + custom design system |
-| Auth         | Supabase Auth (magic link + OAuth)  |
+| Auth         | Supabase Auth (Magic Link + Google OAuth) |
 | Database     | Supabase PostgreSQL                 |
 | ORM          | Prisma                              |
 | Icons        | Lucide React                        |
@@ -59,14 +57,14 @@ A full-stack web application that incentivizes university students to recycle by
 ecotoken/
 ├── app/
 │   ├── api/
-│   │   ├── auth/me/route.ts        # User profile endpoint
-│   │   ├── recycling/route.ts      # Recycling CRUD
-│   │   ├── rewards/route.ts        # Rewards catalog + redemption
+│   │   ├── auth/me/route.ts        # User profile (auto-create on first login)
+│   │   ├── recycling/route.ts      # Recycling CRUD + streak tracking
+│   │   ├── rewards/route.ts        # Rewards catalog + atomic redemption
 │   │   ├── admin/route.ts          # Admin token awards
 │   │   └── leaderboard/route.ts    # Leaderboard data
 │   ├── auth/
-│   │   ├── login/page.tsx          # Login page
-│   │   └── callback/route.ts       # OAuth callback handler
+│   │   ├── login/page.tsx          # Login (Magic Link + Google OAuth)
+│   │   └── callback/route.ts       # Auth callback (verifyOtp + exchangeCode)
 │   ├── dashboard/page.tsx          # Main dashboard
 │   ├── history/page.tsx            # Recycling history
 │   ├── rewards/page.tsx            # Rewards marketplace
@@ -108,44 +106,63 @@ ecotoken/
 ## Setup Instructions
 
 ### Prerequisites
-- Node.js 18+ and npm/yarn/pnpm
+- Node.js 18+ and npm
 - A [Supabase](https://supabase.com) account (free tier works)
 - A [Vercel](https://vercel.com) account (for deployment)
+- A [Google Cloud](https://console.cloud.google.com) project (for Google OAuth, optional)
 
 ### 1. Clone & Install
 
 ```bash
-git clone <your-repo-url> ecotoken
-cd ecotoken
+git clone https://github.com/JackyLin0123/Urep---tokens-website.git
+cd Urep---tokens-website
 npm install
 ```
 
 ### 2. Set Up Supabase
 
-1. **Create a new Supabase project** at [supabase.com/dashboard](https://supabase.com/dashboard)
-2. Go to **Settings → API** and copy:
-   - Project URL → `NEXT_PUBLIC_SUPABASE_URL`
-   - `anon` public key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `service_role` key → `SUPABASE_SERVICE_ROLE_KEY`
-3. Go to **Settings → Database** and copy:
-   - Connection string → `DATABASE_URL` (use the "URI" format; replace `[YOUR-PASSWORD]`)
+1. Create a new project at [supabase.com/dashboard](https://supabase.com/dashboard)
+2. Go to **Settings → API Keys** and copy:
+   - **Publishable key** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - **Secret key** → `SUPABASE_SERVICE_ROLE_KEY`
+3. Go to **Settings → General** and note the **Project ID**, your URL is:
+   ```
+   https://[PROJECT_ID].supabase.co
+   ```
+4. Click the green **Connect** button at the top → copy the **URI** connection string → `DATABASE_URL`
 
 ### 3. Run the Database Schema
 
-1. Go to **SQL Editor** in your Supabase dashboard
+1. Go to **SQL Editor** in Supabase dashboard
 2. Paste the contents of `prisma/supabase-schema.sql`
 3. Click **Run** — this creates all tables, enums, RLS policies, and seeds the rewards catalog
 
-### 4. Configure Auth Providers
+### 4. Configure Authentication
 
-In Supabase dashboard → **Authentication → Providers**:
+#### Magic Link (Email)
+- Supabase → **Authentication** → **Email Templates** → **Magic Link**
+- Set the Body to:
+  ```html
+  <h2>Magic Link</h2>
+  <p>Follow this link to login:</p>
+  <p><a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=magiclink">Log In</a></p>
+  ```
 
-- **Email**: Enable "Magic Link" sign-in (enabled by default)
-- **Google** (optional): Create OAuth credentials at [Google Cloud Console](https://console.cloud.google.com/), then paste the Client ID and Secret in Supabase
+#### Google OAuth (Optional)
+1. Go to [Google Cloud Console](https://console.cloud.google.com) → create/select a project
+2. **Google Auth Platform** → **Branding** → fill App name (`EcoToken`), support email, developer email → Save
+3. **Clients** → **+ CREATE CLIENT** → Web application
+4. Add **Authorized redirect URI**:
+   ```
+   https://[PROJECT_ID].supabase.co/auth/v1/callback
+   ```
+5. Copy the **Client ID** and **Client Secret**
+6. Supabase → **Authentication** → **Providers** → **Google** → Enable → paste Client ID & Secret → Save
 
-Add your site URL under **Authentication → URL Configuration**:
-- Site URL: `http://localhost:3000` (dev) or your production URL
-- Redirect URLs: `http://localhost:3000/auth/callback`
+#### URL Configuration
+- Supabase → **Authentication** → **URL Configuration**
+- **Site URL**: `https://your-vercel-domain.vercel.app`
+- **Redirect URLs**: `https://your-vercel-domain.vercel.app/auth/callback`
 
 ### 5. Environment Variables
 
@@ -153,60 +170,52 @@ Add your site URL under **Authentication → URL Configuration**:
 cp .env.example .env.local
 ```
 
-Fill in the values:
+Fill in:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
-DATABASE_URL=postgresql://postgres:PASSWORD@db.xxxxx.supabase.co:5432/postgres
+NEXT_PUBLIC_SUPABASE_URL=https://[PROJECT_ID].supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxxxx
+SUPABASE_SERVICE_ROLE_KEY=sb_secret_xxxxx
+DATABASE_URL=postgresql://postgres.[PROJECT_ID]:[PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-### 6. Generate Prisma Client
+### 6. Run Locally
 
 ```bash
 npx prisma generate
-```
-
-> **Note**: If you prefer to manage the schema via Prisma migrations instead of the SQL file, you can run `npx prisma db push` instead. The SQL file and Prisma schema are kept in sync.
-
-### 7. Run Development Server
-
-```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) — you should see the landing page.
+Open [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## Deployment to Vercel
+## Deployment (Vercel)
 
 ### 1. Push to GitHub
 
 ```bash
-git init
 git add .
 git commit -m "Initial commit"
-git remote add origin <your-repo-url>
-git push -u origin main
+git push origin main
 ```
 
 ### 2. Import to Vercel
 
-1. Go to [vercel.com/new](https://vercel.com/new)
-2. Import your GitHub repo
-3. Set the **Root Directory** to the project root
-4. Add all environment variables from `.env.local`
-5. Set the **Build Command** to: `npx prisma generate && next build`
-6. Deploy!
+1. Go to [vercel.com/new](https://vercel.com/new) → Import your GitHub repo
+2. Set **Build Command** to:
+   ```
+   npx prisma generate && next build
+   ```
+3. Add all environment variables from `.env.local` (change `NEXT_PUBLIC_APP_URL` to your Vercel domain)
+4. Deploy
 
-### 3. Update Supabase URLs
+### 3. Post-Deployment
 
-In Supabase → **Authentication → URL Configuration**:
-- Update Site URL to: `https://your-app.vercel.app`
-- Add redirect URL: `https://your-app.vercel.app/auth/callback`
+1. Update Supabase **URL Configuration** with your Vercel production domain
+2. Update Supabase **Magic Link email template** (if not done already)
+3. Add Vercel domain to Google OAuth **Authorized redirect URIs** (if using Google login)
 
 ---
 
@@ -215,33 +224,49 @@ In Supabase → **Authentication → URL Configuration**:
 | Variable                         | Description                              | Required |
 |----------------------------------|------------------------------------------|----------|
 | `NEXT_PUBLIC_SUPABASE_URL`       | Supabase project URL                     | ✅       |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | Supabase public anon key                 | ✅       |
-| `SUPABASE_SERVICE_ROLE_KEY`      | Supabase service role key (server only)  | ✅       |
-| `DATABASE_URL`                   | PostgreSQL connection string             | ✅       |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | Supabase publishable key                 | ✅       |
+| `SUPABASE_SERVICE_ROLE_KEY`      | Supabase secret key (server only)        | ✅       |
+| `DATABASE_URL`                   | PostgreSQL connection string (via Connect button) | ✅ |
 | `NEXT_PUBLIC_APP_URL`            | Your app's base URL                      | ✅       |
 
 ---
 
 ## Demo Walkthrough
 
-1. **Sign up** with any email (magic link) or Google
-2. Go to **Admin Panel** → enter your email, select item types, and award yourself tokens
-3. Check **Dashboard** to see your updated stats
-4. Browse **Rewards Marketplace** and redeem tokens for rewards
+1. **Sign up** with any email (Magic Link) or Google
+2. Go to **Admin Panel** → enter your email, select items, award yourself tokens
+3. Check **Dashboard** to see updated stats and streak
+4. Browse **Rewards Marketplace** and redeem tokens
 5. View **History** to see all recycling entries
-6. Check **Leaderboard** to see rankings
+6. Check **Leaderboard** to see campus rankings
 7. Visit **Profile** to view your wallet and milestones
+
+---
+
+## Token Values
+
+| Item            | Tokens |
+|-----------------|--------|
+| Plastic Bottle  | 5      |
+| Aluminum Can    | 5      |
+| Glass Bottle    | 7      |
+| Paper           | 3      |
+| Cardboard       | 4      |
+| Electronics     | 15     |
+| Textile         | 10     |
+| Compost         | 3      |
+| Other           | 2      |
 
 ---
 
 ## Extending the Project
 
-- **Smart bin integration**: Replace the admin panel with IoT sensor webhooks
-- **Push notifications**: Remind students about streaks via Supabase Realtime
-- **Social sharing**: Let students share achievements on social media
-- **University federation**: Multi-campus support with org-level admin
-- **Analytics dashboard**: Admin view with charts (recharts/d3)
-- **Mobile app**: Wrap with Capacitor or React Native
+- **Smart bin integration** — Replace admin panel with IoT sensor webhooks
+- **Push notifications** — Streak reminders via Supabase Realtime
+- **Social sharing** — Share achievements on social media
+- **Multi-campus support** — University federation with org-level admin
+- **Analytics dashboard** — Admin charts with recharts/d3
+- **Mobile app** — Wrap with Capacitor or React Native
 
 ---
 
