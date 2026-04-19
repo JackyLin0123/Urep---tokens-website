@@ -89,7 +89,12 @@ export default function Navbar({ user }: NavbarProps) {
             </Link>
           )}
         </nav>
-
+	
+	  {/* Team credit */}
+        <div className="px-6 py-2">
+          <p className="text-[10px] text-surface-300 tracking-wider uppercase">Built by Green Frame</p>
+        </div>
+	
         {/* User footer */}
         <div className="px-4 py-4 border-t border-surface-100">
           <div className="flex items-center justify-between">

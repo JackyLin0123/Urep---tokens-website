@@ -99,33 +99,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Impact stats ─────────────────────── */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-20">
-        <div className="grid sm:grid-cols-3 gap-6">
-          {[
-            { icon: TreePine, value: "1,200+", label: "Trees Saved" },
-            { icon: Droplets, value: "50,000", label: "Bottles Recycled" },
-            { icon: Wind, value: "8 tons", label: "CO₂ Reduced" },
-          ].map(({ icon: Icon, value, label }) => (
-            <div
-              key={label}
-              className="eco-card p-6 text-center"
-            >
-              <Icon className="w-8 h-8 text-eco-500 mx-auto mb-3" />
-              <p className="font-display text-3xl text-surface-900 mb-1">{value}</p>
-              <p className="text-sm text-surface-500">{label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* ── Footer ───────────────────────────── */}
       <footer className="border-t border-surface-100 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Leaf className="w-4 h-4 text-eco-500" />
             <span className="text-sm text-surface-500">
-              EcoToken © {new Date().getFullYear()} — Campus Sustainability
+              EcoToken © {new Date().getFullYear()} — Built by Green Frame
             </span>
           </div>
           <div className="flex items-center gap-4 text-sm text-surface-400">
