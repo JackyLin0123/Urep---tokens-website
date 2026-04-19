@@ -28,6 +28,8 @@ export default function QuizPlayer({
   onComplete,
   onBack,
 }: QuizPlayerProps) {
+  // Capture whether the quiz was already completed BEFORE this attempt
+  const [wasAlreadyCompleted] = useState(alreadyCompleted);
   const [currentQ, setCurrentQ] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -56,7 +58,7 @@ export default function QuizPlayer({
     if (isLastQuestion) {
       const finalScore = score;
       setFinished(true);
-      if (!alreadyCompleted) {
+      if (!wasAlreadyCompleted) {
         setSubmitting(true);
         const res = await onComplete(quiz.id, finalScore, quiz.questions.length);
         setResult(res);
@@ -101,7 +103,7 @@ export default function QuizPlayer({
           </div>
 
           <h2 className="font-display text-2xl text-surface-900 mb-2">
-            {result?.label || (alreadyCompleted ? "Already Completed" : "Quiz Complete!")}
+            {result?.label || (wasAlreadyCompleted ? "Practice Complete" : "Quiz Complete!")}
           </h2>
 
           <p className="text-sm text-surface-500 mb-4">
@@ -115,13 +117,13 @@ export default function QuizPlayer({
             </div>
           )}
 
-          {alreadyCompleted && (
+          {wasAlreadyCompleted && (
             <p className="text-sm text-amber-600 bg-amber-50 px-4 py-2 rounded-xl mb-4">
               You've already completed this quiz. No additional tokens awarded.
             </p>
           )}
 
-          {result && result.tokensEarned === 0 && !alreadyCompleted && (
+          {result && result.tokensEarned === 0 && !wasAlreadyCompleted && (
             <p className="text-sm text-surface-500 mb-4">
               Score 60% or higher to earn tokens. Give it another try!
             </p>
@@ -159,7 +161,7 @@ export default function QuizPlayer({
             Question {currentQ + 1} of {quiz.questions.length}
           </p>
         </div>
-        {alreadyCompleted && (
+        {wasAlreadyCompleted && (
           <span className="text-xs bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full font-medium">
             Practice Mode
           </span>

@@ -282,7 +282,7 @@ export const VIDEOS: VideoItem[] = [
     category: "How to Sort",
     emoji: "🏫",
   },
-{
+  {
     id: "vid-improper-disposal-consequences",
     title: "What Happens to Your Recycling After It's Collected?",
     description: "Follow the recycling process from bins to plant. See what happens when waste is sorted wrong and why contamination sends recyclables to landfills.",

@@ -8,7 +8,6 @@ import {
   Coins,
   Trophy,
   CheckCircle2,
-  Lock,
   ArrowRight,
   Sparkles,
 } from "lucide-react";
@@ -76,7 +75,6 @@ export default function EducationPage() {
       const data = await res.json();
 
       if (res.ok) {
-        // Update local state
         setUser((prev) =>
           prev ? { ...prev, tokenBalance: data.newBalance } : prev
         );
@@ -285,7 +283,7 @@ export default function EducationPage() {
                     ) : (
                       <span className="text-xs text-surface-400 flex items-center gap-1">
                         <Coins className="w-3 h-3" />
-                        Earn up to 25 tokens
+                        Earn up to 15 tokens
                       </span>
                     )}
                     <span className="text-xs text-eco-600 font-medium flex items-center gap-1">
@@ -306,9 +304,9 @@ export default function EducationPage() {
             </p>
             <div className="grid grid-cols-3 gap-3 text-center">
               {[
-                { label: "100%", tokens: 25, color: "bg-eco-100 text-eco-700" },
-                { label: "80%+", tokens: 20, color: "bg-blue-100 text-blue-700" },
-                { label: "60%+", tokens: 10, color: "bg-amber-100 text-amber-700" },
+                { label: "100%", tokens: 15, color: "bg-eco-100 text-eco-700" },
+                { label: "80%+", tokens: 10, color: "bg-blue-100 text-blue-700" },
+                { label: "60%+", tokens: 2, color: "bg-amber-100 text-amber-700" },
               ].map(({ label, tokens, color }) => (
                 <div key={label} className={`${color} rounded-xl py-2 px-3`}>
                   <p className="text-xs font-semibold">{label}</p>
