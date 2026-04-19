@@ -10,7 +10,6 @@ import type { RewardItem, RewardCategory, UserProfile } from "@/types";
 
 const ALL_CATEGORIES: (RewardCategory | "ALL")[] = [
   "ALL",
-  "SERVICE_HOURS",
   "FOOD_VOUCHER",
   "MERCHANDISE",
   "EXPERIENCE",
