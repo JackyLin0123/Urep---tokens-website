@@ -282,7 +282,6 @@ export const VIDEOS: VideoItem[] = [
     category: "How to Sort",
     emoji: "🏫",
   },
-  {
 {
     id: "vid-improper-disposal-consequences",
     title: "What Really Happens to Your Trash",
