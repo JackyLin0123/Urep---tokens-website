@@ -283,11 +283,12 @@ export const VIDEOS: VideoItem[] = [
     emoji: "🏫",
   },
   {
+{
     id: "vid-improper-disposal-consequences",
-    title: "Consequences of Improper Waste Disposal",
-    description: "What happens when hazardous waste isn't handled properly? Learn about soil contamination, water pollution, and health risks.",
-    youtubeId: "bd5NxmsAh4k",
-    duration: "6:20",
+    title: "What Really Happens to Your Trash",
+    description: "TED-Ed explains where plastic and waste actually end up when not disposed of properly, and the damage it causes to ecosystems.",
+    youtubeId: "_6xlNyWPpB8",
+    duration: "4:06",
     category: "Dangers",
     emoji: "⚠️",
   },
