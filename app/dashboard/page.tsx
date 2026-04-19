@@ -13,6 +13,7 @@ import {
   ArrowRight,
   Leaf,
   Trophy,
+  GraduationCap,
 } from "lucide-react";
 import StatCard from "@/components/ui/StatCard";
 import Spinner from "@/components/ui/Spinner";
@@ -127,17 +128,17 @@ export default function DashboardPage() {
         </Link>
 
         <Link
-          href="/leaderboard"
+          href="/education"
           className="eco-card p-5 flex items-center gap-4 group"
         >
-          <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center group-hover:bg-amber-200 transition-colors">
-            <Trophy className="w-6 h-6 text-amber-600" />
+          <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+            <GraduationCap className="w-6 h-6 text-purple-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-surface-800 text-sm">Leaderboard</p>
-            <p className="text-xs text-surface-400">See top recyclers</p>
+            <p className="font-semibold text-surface-800 text-sm">Learn & Earn</p>
+            <p className="text-xs text-surface-400">Quizzes & videos</p>
           </div>
-          <ArrowRight className="w-4 h-4 text-surface-300 group-hover:text-amber-500 transition-colors" />
+          <ArrowRight className="w-4 h-4 text-surface-300 group-hover:text-purple-500 transition-colors" />
         </Link>
       </div>
 

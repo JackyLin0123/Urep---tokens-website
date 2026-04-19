@@ -15,11 +15,13 @@ import {
   LogOut,
   Info,
   Shield,
+  GraduationCap,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase-browser";
 
 const NAV_ITEMS = [
   { href: "/dashboard",   label: "Dashboard",   icon: LayoutDashboard },
+  { href: "/education",   label: "Learn & Earn", icon: GraduationCap },
   { href: "/history",     label: "History",      icon: History },
   { href: "/rewards",     label: "Rewards",      icon: Gift },
   { href: "/leaderboard", label: "Leaderboard",  icon: Trophy },
@@ -171,7 +173,7 @@ export default function Navbar({ user }: NavbarProps) {
 
       {/* ── Mobile bottom nav ────────────────────── */}
       <nav className="lg:hidden fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-lg border-t border-surface-100 z-40 flex items-center justify-around h-16 px-2 safe-area-bottom">
-        {[NAV_ITEMS[0], NAV_ITEMS[1], NAV_ITEMS[2], NAV_ITEMS[4]].map(({ href, label, icon: Icon }) => {
+        {[NAV_ITEMS[0], NAV_ITEMS[1], NAV_ITEMS[3], NAV_ITEMS[5]].map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(href + "/");
           return (
             <Link
